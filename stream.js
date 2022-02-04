@@ -15,35 +15,32 @@ Your system should record each rating and be able to return the highest avg rate
 class Stream {
   constructor() {
     this.games = {};
-    // this.games = {
-    //   1: {
-    //     rating: 0,
-    //     ratings: 0,
-    //   }
-    // }
+    this.topRanking = -Infinity;
+    this.topGame = null;
   }
 
   rankGame(r) {
-    if (!(r.id in this.games)) this.games[r.id] = {rating: 0, ratings: 0};
+    if (!(r.id in this.games)) this.games[r.id] = {rating: 0, ratings: 0, avg: 0};
     this.games[r.id].rating += r.rating;
     this.games[r.id].ratings++;
+    this.games[r.id].avg = this.games[r.id].rating / this.games[r.id].ratings;
+    if (this.games[r.id].avg > this.topRanking) {
+      this.topRanking = this.games[r.id].avg;
+      this.topGame = r.id;
+    }
   }
 
   getHighestRanked() { 
-    let max = -Infinity;
-    let gameId;
-    for (let game in this.games) {
-      const avgRating = this.getAvg(game)
-      if (avgRating > max) { // if there's are several highest ranked, we'll return the first
-        max = avgRating;
-        gameId = game;
-      }
-    }
-    return gameId;
-  }
-
-  getAvg(game) { // 1
-    return this.games[game].rating / this.games[game].ratings;
+    // let max = -Infinity;
+    // let gameId;
+    // for (let game in this.games) {
+    //   if (this.games[game].avg > max) { // if there's are several highest ranked, we'll return the first
+    //     max = this.games[game].avg;
+    //     gameId = game;
+    //   }
+    // }
+    // return gameId;
+    return this.topGame;
   }
 }
 
